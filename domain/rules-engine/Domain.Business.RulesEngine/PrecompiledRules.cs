@@ -4,18 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 using Domain.RulesEngine.Models;
 
 namespace Domain.RulesEngine.Business
 {
-    public class PrecompiledRules
+    public static class PrecompiledRules
     {
-        ///
+        /// <summary>
         /// A method used to precompile rules for a provided type
-        /// 
-//        public static List<Func<T, bool>> CompileRule<T>(List<T> targetEntity, List<Rule> rules)
+        /// </summary>
+        /// <param name="rules">List of predefined rules to be used as a base of the rules compilation</param>
+        /// <returns></returns>
         public static List<Func<RuleSetEvaluationData, bool>> CompileRule(List<Rule> rules)
         {
 
@@ -29,7 +28,7 @@ namespace Domain.RulesEngine.Business
                 var ruleValue = rule.RuleOperator == "NotEqual" ? string.Concat("(?!", rule.RuleValue, ").*") : rule.RuleValue;
 
                 var genericType = Expression.Parameter(typeof(RuleSetEvaluationData));
-                var key = MemberExpression.Property(genericType, "ConditionData");
+                var key = Expression.Property(genericType, "ConditionData");
 
                 var propertyType = typeof(DictionaryEntry);
 

@@ -4,11 +4,11 @@ using Module = Autofac.Module;
 
 namespace Domain.RulesEngine.Business.Modules
 {
-	public class BapsDomainServicesModule : Module
+	public class DomainServicesModule : Module
 	{
 		private readonly string _domainService;
 
-		public BapsDomainServicesModule(string domainService)
+		public DomainServicesModule(string domainService)
 		{
 			_domainService = domainService;
 		}

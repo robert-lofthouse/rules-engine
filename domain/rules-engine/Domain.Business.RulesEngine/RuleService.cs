@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.RulesEngine.Enums;
 using Domain.RulesEngine.Interface;
 using Domain.RulesEngine.Models;
 using RulesEngine.Data.Interface;
@@ -12,18 +11,15 @@ namespace Domain.RulesEngine.Business
 
     public class RuleService : IRuleService
     {
-        private readonly ICacherService _cacherService;
         private readonly IRulesRepository _rulesRepo;
         private readonly IRulesEngineRepository<RuleSetRule, Guid> _ruleSetRuleRepo;
 
 
-        public RuleService(ICacherService cacherService,
-            IRulesRepository rulesRepo,
+        public RuleService(IRulesRepository rulesRepo,
             IRulesEngineRepository<RuleSetRule, Guid> ruleSetRuleRepo
             )
         {
 
-            _cacherService = cacherService;
             _ruleSetRuleRepo = ruleSetRuleRepo;
             _rulesRepo = rulesRepo;
         }

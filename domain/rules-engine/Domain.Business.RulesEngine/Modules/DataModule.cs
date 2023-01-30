@@ -9,11 +9,11 @@ using Module = Autofac.Module;
 
 namespace Domain.RulesEngine.Business.Modules
 {
-	public class BapsDataBapsModule : Module
+	public class DataModule : Module
 	{
 		private readonly IConfiguration _configuration;
 
-		public BapsDataBapsModule(IConfiguration configuration)
+		public DataModule(IConfiguration configuration)
 		{
 			_configuration = configuration;
 		}

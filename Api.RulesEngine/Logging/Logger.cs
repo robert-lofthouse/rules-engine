@@ -9,7 +9,7 @@ using Serilog.Sinks.Elasticsearch;
 
 namespace API.RulesEngine.Logging
 {
-    public static class BAPSLogger
+    public static class Logger
     {
         internal static void CreateSerilogConfiguration()
         {

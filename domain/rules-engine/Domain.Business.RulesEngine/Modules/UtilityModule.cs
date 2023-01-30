@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Domain.RulesEngine.Business.Modules
 {
-	public class BapsUtilityModule : Module
+	public class UtilityModule : Module
 	{
 		protected override void Load(ContainerBuilder builder)
 		{

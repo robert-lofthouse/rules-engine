@@ -27,7 +27,7 @@ namespace Domain.RulesEngine.Business
 			return Encoding.UTF8.GetString(data);
 		}
 
-		public static T DeserializeXml<T>(this string input, string schemaInfo = "<BAPS_Message>")
+		public static T DeserializeXml<T>(this string input, string schemaInfo = "<_Message>")
 		{
 			XmlSerializer serializer = new XmlSerializer(typeof(T));
 			input = RemoveXMLSchemaInfo(input, schemaInfo);

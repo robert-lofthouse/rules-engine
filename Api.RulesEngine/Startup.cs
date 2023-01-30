@@ -53,9 +53,9 @@ namespace Api.RulesEngine
 
 		public void ConfigureContainer(ContainerBuilder builder)
 		{
-			builder.RegisterModule(new BapsUtilityModule());
-			builder.RegisterModule(new BapsDataBapsModule(Configuration));
-			builder.RegisterModule(new BapsDomainServicesModule(ApiConstant.D_NAME));
+			builder.RegisterModule(new UtilityModule());
+			builder.RegisterModule(new DataModule(Configuration));
+			builder.RegisterModule(new DomainServicesModule(ApiConstant.D_NAME));
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

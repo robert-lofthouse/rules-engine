@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Domain.RulesEngine.Interface;
 using Domain.RulesEngine.Models;
 using RulesEngine.Data.Interface;

@@ -12,7 +12,7 @@ namespace Api.RulesEngine
 		public static void Main(string[] args)
 		{
 
-            BAPSLogger.CreateSerilogConfiguration();
+            Logger.CreateSerilogConfiguration();
 
 
             try
