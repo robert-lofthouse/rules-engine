@@ -1,14 +1,14 @@
 ﻿
-using System.Collections.Generic;
+using System;
 using Domain.RulesEngine.Enums;
 
 namespace Domain.RulesEngine.Models
 {
-    public class RuleSetEvaluationData
+    public class RuleSetEvaluationData : EvaluationData
     {
-        public string RuleSetType { get; set; }
-        public RulesEngineEvaluationType EvaluationType { get; set; }
-        public Dictionary<string, string> ConditionData { get; set; }
+        public Guid RuleSetRefNoType { get; set; }
 
     }
+
+
 }

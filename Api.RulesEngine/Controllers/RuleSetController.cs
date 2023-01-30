@@ -36,9 +36,21 @@ namespace API.RulesEngine.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Evaluate")]
-        public List<RuleEvaluationReturn> EvaluateRuleSets([FromBody] RuleSetEvaluationData dataObject)
+        public List<RuleEvaluationReturn> EvaluateRuleSets([FromBody] RuleSetTypeEvaluationData dataObject)
         {
             return _ruleSetService.EvaluateRuleSets(dataObject);
+        }
+        
+        /// <summary>
+        /// Evaluates the conditions supplied to determine which rulesets match
+        /// </summary>
+        /// <param name="dataObject"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("EvaluateRuleSet")]
+        public List<RuleEvaluationReturn> EvaluateRuleSet([FromBody] RuleSetEvaluationData dataObject)
+        {
+            return _ruleSetService.EvaluateRuleSet(dataObject);
         }
 
 

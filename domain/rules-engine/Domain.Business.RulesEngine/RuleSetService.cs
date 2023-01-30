@@ -35,28 +35,49 @@ namespace Domain.RulesEngine.Business
         /// <summary>
         /// Evaluates the input data against the configured rulesets and returns a list of entity instance numbers linked to the ruleset
         /// </summary>
-        /// <param name="ruleSetEvaluationData"></param>
+        /// <param name="ruleSetTypeEvaluationData"></param>
         /// <returns></returns>
-        public List<RuleEvaluationReturn> EvaluateRuleSets(RuleSetEvaluationData ruleSetEvaluationData)
+        public List<RuleEvaluationReturn> EvaluateRuleSets(RuleSetTypeEvaluationData ruleSetTypeEvaluationData)
         {
 
-            List<RuleSet> evalRuleSets = _ruleSetRepo.GetRuleSets(ruleSetEvaluationData.RuleSetType);
+            List<RuleSet> evalRuleSets = _ruleSetRepo.GetRuleSets(ruleSetTypeEvaluationData.RuleSetType);
             List<RuleEvaluationReturn> evalReturn = new List<RuleEvaluationReturn>();
 
             foreach (var rs in evalRuleSets.OrderByDescending(c => c.Rules.Count).ThenBy(x => x.RuleSetRanking).ToList())
             {
                 if (rs.Rules.Count > 0)
                 {
-                    var compiledRules = PrecompiledRules.CompileRule(rs.Rules);
+                    var compiledRules = PrecompiledRules.CompileRule<RuleSetTypeEvaluationData>(rs.Rules);
 
-                    if (compiledRules.TakeWhile(rule => rule(ruleSetEvaluationData)).Count() ==
+                    if (compiledRules.TakeWhile(rule => rule(ruleSetTypeEvaluationData)).Count() ==
                         rs.Rules.Count)
                     {
                         evalReturn.Add(new RuleEvaluationReturn
                             {RuleSetRefNo = rs.RuleSetRefNo.Value, RuleSetName = rs.RuleSetName});
-                        if (ruleSetEvaluationData.EvaluationType != RulesEngineEvaluationType.MatchAll)
+                        if (ruleSetTypeEvaluationData.EvaluationType != RulesEngineEvaluationType.MatchAll)
                             break;
                     }
+                }
+            }
+
+            return evalReturn;
+        }        
+        
+        public List<RuleEvaluationReturn> EvaluateRuleSet(RuleSetEvaluationData ruleSetEvaluationData)
+        {
+
+            RuleSet evalRuleSet = _ruleSetRepo.GetRuleSet(ruleSetEvaluationData.RuleSetRefNoType);
+            List<RuleEvaluationReturn> evalReturn = new List<RuleEvaluationReturn>();
+
+            if (evalRuleSet.Rules.Count > 0)
+            {
+                var compiledRules = PrecompiledRules.CompileRule<RuleSetEvaluationData>(evalRuleSet.Rules);
+
+                if (compiledRules.TakeWhile(rule => rule(ruleSetEvaluationData)).Count() ==
+                    evalRuleSet.Rules.Count)
+                {
+                    evalReturn.Add(new RuleEvaluationReturn
+                        {RuleSetRefNo = evalRuleSet.RuleSetRefNo.Value, RuleSetName = evalRuleSet.RuleSetName});
                 }
             }
 

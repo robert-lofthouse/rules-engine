@@ -15,11 +15,10 @@ namespace Domain.RulesEngine.Business
         /// </summary>
         /// <param name="rules">List of predefined rules to be used as a base of the rules compilation</param>
         /// <returns></returns>
-        public static List<Func<RuleSetEvaluationData, bool>> CompileRule(List<Rule> rules)
+        public static List<Func<T, bool>> CompileRule<T>(List<Rule> rules)
         {
 
-
-            var compiledRules = new List<Func<RuleSetEvaluationData, bool>>();
+            var compiledRules = new List<Func<T, bool>>();
 
             // Loop through the rules and compile them against the properties of the supplied shallow object 
             rules.ForEach(rule =>
@@ -27,7 +26,7 @@ namespace Domain.RulesEngine.Business
 
                 var ruleValue = rule.RuleOperator == "NotEqual" ? string.Concat("(?!", rule.RuleValue, ").*") : rule.RuleValue;
 
-                var genericType = Expression.Parameter(typeof(RuleSetEvaluationData));
+                var genericType = Expression.Parameter(typeof(T));
                 var key = Expression.Property(genericType, "ConditionData");
 
                 var propertyType = typeof(DictionaryEntry);
@@ -38,13 +37,12 @@ namespace Domain.RulesEngine.Business
                 
                 var binaryExpression = Expression.MakeBinary(ExpressionType.Equal, key, value ,false, method);
 
-                compiledRules.Add(Expression.Lambda<Func<RuleSetEvaluationData, bool>>(binaryExpression, genericType).Compile());
+                compiledRules.Add(Expression.Lambda<Func<T, bool>>(binaryExpression, genericType).Compile());
             });
 
             // Return the compiled rules to the caller
             return compiledRules;
 
         }
-
     }
 }
