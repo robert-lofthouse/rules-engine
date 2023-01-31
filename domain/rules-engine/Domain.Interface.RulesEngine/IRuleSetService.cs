@@ -8,7 +8,7 @@ namespace Domain.RulesEngine.Interface
     public interface IRuleSetService
     {
         List<RuleEvaluationReturn> EvaluateRuleSets(RuleSetTypeEvaluationData ruleSetEvaluationData);
-        List<RuleEvaluationReturn> EvaluateRuleSet(RuleSetEvaluationData ruleSetEvaluationData);
+        bool EvaluateRuleSet(RuleSetEvaluationData ruleSetEvaluationData);
         List<RuleSet> CheckForPossibleConflicts(RuleSet rs);
         RuleSet GetRuleSet(Guid ruleSetRefNo);
         List<RuleSet> GetRuleSets();

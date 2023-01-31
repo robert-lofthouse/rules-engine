@@ -33,7 +33,7 @@ namespace Domain.RulesEngine.Business
 
 
         /// <summary>
-        /// Evaluates the input data against the configured rulesets and returns a list of entity instance numbers linked to the ruleset
+        /// Evaluates the input data against the configured rulesets for a ruleset and returns a list of entity instance numbers linked to the ruleset
         /// </summary>
         /// <param name="ruleSetTypeEvaluationData"></param>
         /// <returns></returns>
@@ -63,11 +63,15 @@ namespace Domain.RulesEngine.Business
             return evalReturn;
         }        
         
-        public List<RuleEvaluationReturn> EvaluateRuleSet(RuleSetEvaluationData ruleSetEvaluationData)
+        /// <summary>
+        /// Evaluates the input data against a specific ruleset to determine a true match (all rules match) or a false (at least one rule does not match)
+        /// </summary>
+        /// <param name="ruleSetEvaluationData"></param>
+        /// <returns></returns>
+        public bool EvaluateRuleSet(RuleSetEvaluationData ruleSetEvaluationData)
         {
 
-            RuleSet evalRuleSet = _ruleSetRepo.GetRuleSet(ruleSetEvaluationData.RuleSetRefNoType);
-            List<RuleEvaluationReturn> evalReturn = new List<RuleEvaluationReturn>();
+            RuleSet evalRuleSet = _ruleSetRepo.GetRuleSet(ruleSetEvaluationData.RuleSetRefNo);
 
             if (evalRuleSet.Rules.Count > 0)
             {
@@ -76,12 +80,11 @@ namespace Domain.RulesEngine.Business
                 if (compiledRules.TakeWhile(rule => rule(ruleSetEvaluationData)).Count() ==
                     evalRuleSet.Rules.Count)
                 {
-                    evalReturn.Add(new RuleEvaluationReturn
-                        {RuleSetRefNo = evalRuleSet.RuleSetRefNo.Value, RuleSetName = evalRuleSet.RuleSetName});
+                    return true;
                 }
             }
 
-            return evalReturn;
+            return false;
         }
 
         /// <summary>
@@ -90,7 +93,7 @@ namespace Domain.RulesEngine.Business
         ///     - The number of rules are the same AND
         ///     -   of the rules that are not exactly the same, there are no match fields
         /// </summary>
-        /// <param name="rs"></param>
+        /// <param name="rs">The ruleset that we would like to check against all other rulesets for conflicts</param>
         /// <returns></returns>
         public List<RuleSet> CheckForPossibleConflicts(RuleSet rs)
         {

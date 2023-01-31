@@ -6,7 +6,7 @@ namespace Domain.RulesEngine.Models
 {
     public class RuleSetEvaluationData : EvaluationData
     {
-        public Guid RuleSetRefNoType { get; set; }
+        public Guid RuleSetRefNo { get; set; }
 
     }
 
