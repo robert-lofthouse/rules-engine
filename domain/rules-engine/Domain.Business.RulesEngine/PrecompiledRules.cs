@@ -23,22 +23,47 @@ namespace Domain.RulesEngine.Business
             // Loop through the rules and compile them against the properties of the supplied shallow object 
             rules.ForEach(rule =>
             {
-
-                var ruleValue = rule.RuleOperator == "NotEqual" ? string.Concat("(?!", rule.RuleValue, ").*") : rule.RuleValue;
-
                 var genericType = Expression.Parameter(typeof(T));
-                var key = Expression.Property(genericType, "ConditionData");
+                var dictionary = Expression.Property(genericType, "ConditionData");
 
-                var propertyType = typeof(DictionaryEntry);
+                BinaryExpression binaryExpression = null;
+                var method = typeof(EvaluateRegEx).GetMethod("DoRegExIsMatch", new[] { typeof(Dictionary<string, string>), typeof(DictionaryEntry) });
+    
+                if (rule.RuleOperator is "NotEqual" or "Equal")
+                {
+                    var value = Convert.ChangeType(new DictionaryEntry(rule.RuleField,
+                            rule.RuleOperator == "NotEqual"
+                                ? $"(?!{rule.RuleValue}).*"
+                                : rule.RuleValue),
+                        typeof(DictionaryEntry));
+                    binaryExpression = Expression.MakeBinary(ExpressionType.Equal, dictionary, Expression.Constant(value), false, method);
+                }
+                else
+                {
+                    var key = Expression.Constant(rule.RuleField);
+                    var value = Expression.Property(dictionary, "Item", key);
 
-                var value = Expression.Constant(Convert.ChangeType(new DictionaryEntry(rule.RuleField, $"(?i)({ruleValue})"), propertyType));
-                
-                MethodInfo method = typeof(EvaluateRegEx).GetMethod("DoRegExIsMatch", new []{typeof(Dictionary<string,string>), typeof(DictionaryEntry)});
-                
-                var binaryExpression = Expression.MakeBinary(ExpressionType.Equal, key, value ,false, method);
+                    var constant = int.TryParse(rule.RuleValue, out int result)
+                        ? Expression.Constant(result)
+                        : (DateTime.TryParse(rule.RuleValue, out DateTime dateResult)
+                            ? Expression.Constant(dateResult)
+                            : null);
 
-                compiledRules.Add(Expression.Lambda<Func<T, bool>>(binaryExpression, genericType).Compile());
+                    if (constant != null)
+                    {
+                        binaryExpression = Expression.MakeBinary(
+                            Enum.Parse<ExpressionType>(rule.RuleOperator),
+                            Expression.Call(
+                                    constant.Type.GetMethod("Parse", new[] { typeof(string) }),
+                                    value),
+                            constant);
+                    }
+                }
+
+                if (binaryExpression != null)
+                    compiledRules.Add(Expression.Lambda<Func<T, bool>>(binaryExpression, genericType).Compile());
             });
+
 
             // Return the compiled rules to the caller
             return compiledRules;
