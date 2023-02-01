@@ -48,7 +48,7 @@ namespace API.RulesEngine.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("EvaluateRuleSet")]
-        public List<RuleEvaluationReturn> EvaluateRuleSet([FromBody] RuleSetEvaluationData dataObject)
+        public bool EvaluateRuleSet([FromBody] RuleSetEvaluationData dataObject)
         {
             return _ruleSetService.EvaluateRuleSet(dataObject);
         }
